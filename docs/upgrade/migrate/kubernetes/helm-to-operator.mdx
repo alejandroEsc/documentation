@@ -74,14 +74,14 @@ To migrate to the latest Redpanda Operator and use it to manage your Helm deploy
   helm upgrade --install redpanda-controller redpanda/operator \
     --namespace <namespace> \
     --set image.repository=docker.redpanda.com/redpandadata/redpanda-operator \
-    --set image.tag=v23.2.1 \
+    --set image.tag=v23.2.2 \
     --create-namespace
   ```
 
 1. Ensure that the Deployment is successfully rolled out:
 
   ```bash
-  kubectl --namespace <namespace> rollout status --watch deployment/redpanda-controller
+  kubectl --namespace <namespace> rollout status -w deployment/redpanda-controller-operator
   ```
 
   ```text-nocopy
@@ -134,12 +134,43 @@ To migrate to the latest Redpanda Operator and use it to manage your Helm deploy
   redpanda   True    Redpanda reconciliation succeeded
   ```
 
-
 ## Troubleshooting
 
 While the deployment process can sometimes take a few minutes, a prolonged 'not ready' status may indicate an issue. See [Troubleshoot Redpanda in Kubernetes](../../../../manage/kubernetes/troubleshooting/troubleshoot#helmrelease-is-not-ready) for more details.
 
 If you cannot solve the issue or you need assistance during the migration process, [open a GitHub issue](https://github.com/redpanda-data/redpanda/issues/new/choose) in the Redpanda repository. Before opening a new issue, search the existing issues on GitHub to see if someone has already reported a similar problem or if any relevant discussions that can help you.
+
+## Rollback from Redpanda Operator to Helm
+
+If you migrated to the Redpanda Operator and want to revert to using only Helm, follow these steps:
+
+1. Delete or disable the Redpanda Operator:
+
+  You can delete the Redpanda Operator using Helm or disable it by changing the image to a nonexistent one.
+
+  ```bash
+  kubectl edit pod <operator-name> --namespace <namespace>
+  ```
+
+1. Remove the [finalizers](https://kubernetes.io/docs/concepts/overview/working-with-objects/finalizers/) from the Redpanda, HelmRelease, HelmChart, and HelmRepository custom resources:
+
+  ```bash
+  kubectl --namespace <namespace> patch redpanda <release-name> -p '{"metadata":{"finalizers":null}}' --type=merge
+  kubectl --namespace <namespace> patch helmrelease <release-name> -p '{"metadata":{"finalizers":null}}' --type=merge
+  kubectl --namespace <namespace> patch helmchart <release-name> -p '{"metadata":{"finalizers":null}}' --type=merge
+  kubectl --namespace <namespace> patch helmrepository <release-name> -p '{"metadata":{"finalizers":null}}' --type=merge
+  ```
+
+1. Delete the resources:
+
+  ```bash
+  kubectl delete redpanda <release-name> --namespace <namespace>
+  kubectl delete helmrelease <release-name> --namespace <namespace>
+  kubectl delete helmchart <release-name> --namespace <namespace>
+  kubectl delete helmrepository <release-name> --namespace <namespace>
+  ```
+
+After completing these steps, Redpanda Operator is no longer managing your Helm deployment.
 
 ## Next steps
 

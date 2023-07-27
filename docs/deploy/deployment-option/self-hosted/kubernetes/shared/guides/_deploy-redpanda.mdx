@@ -44,14 +44,14 @@ Redpanda Operator is in beta. Do not migrate existing production clusters to the
   helm upgrade --install redpanda-controller redpanda/operator \
     --namespace <namespace> \
     --set image.repository=docker.redpanda.com/redpandadata/redpanda-operator \
-    --set image.tag=v23.2.1 \
+    --set image.tag=v23.2.2 \
     --create-namespace
   ```
 
 1. Ensure that the Deployment is successfully rolled out:
 
   ```bash
-  kubectl --namespace <namespace> rollout status --watch deployment/redpanda-controller
+  kubectl --namespace <namespace> rollout status -w deployment/redpanda-controller-operator
   ```
 
   ```text-nocopy
