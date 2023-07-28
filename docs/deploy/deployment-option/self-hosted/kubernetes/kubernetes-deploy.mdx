@@ -29,10 +29,6 @@ Redpanda Console is a developer-friendly web UI for managing and debugging your 
 <Tabs groupId="kubernetes-tool">
 <TabItem value="operator" label="Helm + Operator">
 
-:::caution
-Redpanda Operator is in beta. Do not migrate existing production clusters to the Redpanda Operator.
-:::
-
 1. Make sure that you have permission to install custom resource definitions (CRDs):
 
   ```bash
@@ -109,6 +105,14 @@ Redpanda Operator is in beta. Do not migrate existing production clusters to the
   NAME       READY   STATUS
   redpanda   True    Redpanda reconciliation succeeded
   ```
+
+  This step may take a few minutes. You can watch for new Pods to make sure that the deployment is progressing:
+
+  ```bash
+  kubectl get pod --namespace <namespace>
+  ```
+
+  If it's taking too long, see [Troubleshooting](../../../../../manage/kubernetes/troubleshooting/troubleshoot)
 
 1. Verify that each Redpanda broker is scheduled on only one Kubernetes node:
 
