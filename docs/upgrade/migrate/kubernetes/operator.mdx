@@ -216,7 +216,7 @@ While the deployment process can sometimes take a few minutes, a prolonged 'not 
 1. Check the status of the HelmRelease:
 
   ```bash
-  kubectl describe helmrelease redpanda --namespace <namespace>
+  kubectl describe helmrelease <cluster-name> --namespace <namespace>
   ```
 
 1. Review the Redpanda Operator logs:
