@@ -159,12 +159,12 @@ When you define a Redpanda cluster using this Redpanda resource, the Redpanda Op
     --output=redpanda.yaml
   ```
 
-1. Ensure that your migrated Redpanda custom resource is configured correctly. You can compare the [Cluster and Console CRD reference](../../../../reference/redpanda-operator/crd) to the [Redpanda CRD reference](../../../../reference/crd).
+1. Ensure that your migrated Redpanda resource is configured correctly. You can compare the [Cluster and Console CRD reference](../../../../reference/redpanda-operator/crd) to the [Redpanda CRD reference](../../../../reference/crd).
 
     :::info
+    - The migration tool does not migrate all configurations. For example, if your cluster had SASL enabled, you must manually add any SASL configuration to the Redpanda resource.
     - If the `additionalConfiguration` section of your Cluster resource includes `redpanda.empty_seed_starts_cluster: true`, make sure that this configuration is not present in the migrated `redpanda.yaml` file. The Redpanda Helm chart includes this configuration by default, so if your Redpanda resource also includes it, Redpanda will throw an error due to the duplicated configuration.
-
-    - Make sure that `resources.memory.container.min` and `resources.memory.container.max` are set to at least 2.5Gi. Otherwise, Redpanda will be unable to start.
+    - Make sure that `resources.memory.container.min` and `resources.memory.container.max` are both set to at least 2.5Gi. Otherwise, Redpanda will be unable to start.
     :::
 
 1. Enable the Redpanda Operator to manage your Redpanda resource.
