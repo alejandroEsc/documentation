@@ -134,7 +134,7 @@ When you define a Redpanda cluster using this Redpanda resource, the Redpanda Op
         app.kubernetes.io/name: redpanda
       ```
 
-  This step prevents you from experiencing downtime by making sure the Services do not get redeployed. The names of these Services match the names of the Services that the Redpanda Helm chart will try to deploy when you deploy the Redpanda custom resource. Therefore, these annotations and labels bring the existing Services under the management of Helm so that they do not get deleted and redeployed, saving you potential downtime.
+  This step prevents Services from being redeployed, which reduces downtime. Because the names of these Services match the names of the Services that the Redpanda Helm chart will try to deploy, these annotations and labels bring the existing Services under the management of Helm so that they do not get deleted and redeployed when you apply the Redpanda resource.
 
 1. Adopt the ServiceAccount:
 
