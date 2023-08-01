@@ -307,7 +307,7 @@ If you still have the Cluster resource you may undo and revert your changes, but
   kubectl --namespace <namespace> annotate console <console-name> redpanda.vectorized.io/managed=”true”
   ```
 
-The deprecated Redpanda Operator is now managing your resources.
+The deprecated Redpanda Operator is now managing your resources. Any changes that the Redpanda Operator made to your deployment will be undone and any resources that you deleted will be reapplied.
 
 ## Next steps
 
