@@ -1,0 +1,31 @@
+---
+title: Install cluster-to-redpanda-migration
+---
+
+<head>
+    <meta name="title" content="Redpanda cluster-to-redpanda-migration install | Redpanda Docs"/>
+    <meta name="description" content="The cluster-to-redpanda-migration application is the operator manifest migration tool. "/>
+    <link rel="canonical" href="https://docs.redpanda.com/docs/upgrade/migrate/cluster-to-redpanda-migration-install/" />
+</head>
+
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
+import InstallMigrationCLIMac from "../migrate/install-migration-cli/_install-migration-cli-macos.mdx"
+import InstallMigrationCLILinux from "../migrate/install-migration-cli/_install-migration-cli-linux.mdx"
+
+The `cluster-to-redpanda-migration` application is a single binary that provides a way to  migrate Cluster and Console deprecated Kubernetes resources to the new Redpanda resources. You can install the `cluster-to-redpanda-migration` binary as a standalone tool for self-hosted and cloud deployments, as well as Kubernetes deployments.
+
+
+After you install `cluster-to-redpanda-migration`, you can use it to:
+
+- Migrate Cluster and Console deprecated Kubernetes resources to the new Redpanda resources.
+
+To install the `cluster-to-redpanda-migration` binary as a standalone application, follow the instructions for your operating system.
+
+## Install cluster-to-redpanda-migration on Linux
+
+<InstallMigrationCLILinux/>
+
+## Install cluster-to-redpanda-migration on macOS
+
+<InstallMigrationCLIMac/>
