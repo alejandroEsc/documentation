@@ -38,7 +38,7 @@ spec:
 |Previous version|Updated version|
 |----------------|----------------|
 |The Cluster custom resource was used to configure and deploy Redpanda clusters, while the Console custom resource was used to configure and deploy Redpanda Console.| The Redpanda custom resource is used to deploy both Redpanda and Redpanda Console.
-|  The Redpanda Operator could be deployed in a different namespace to the Cluster or Console resources.|The updated Redpanda Operator must be deployed in the same namespace as the Redpanda custom resource.
+|  The Redpanda Operator could be deployed in a different namespace to the Cluster or Console resources.|The updated Redpanda Operator must be deployed in the same namespace as the Redpanda custom resource. If you deploy multiple Redpanda resources in different namespaces, you must also deploy an instance of Redpanda Operator in those namespaces.
 
 ## Action required
 

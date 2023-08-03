@@ -8,15 +8,27 @@ title: Migrate from Cluster and Console Custom Resources
     <link rel="canonical" href="https://docs.redpanda.com/docs/migrate/kubernetes/operator/" />
 </head>
 
-To ensure compatibility with future versions of Redpanda and to benefit from new features, enhancements, and security updates, you must migrate from the deprecated Cluster and Console custom resources to the Redpanda custom resource. The migration process involves deploying at least version 23.2 of the Redpanda Operator in the same Kubernetes cluster as your existing deprecated Redpanda Operator.
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
+import InstallMigrationCLILinux from "../../shared/install-migration-cli/_install-migration-cli-linux.mdx"
+import InstallMigrationCLIMac from "../../shared/install-migration-cli/_install-migration-cli-macos.mdx"
+
+To ensure compatibility with future versions of Redpanda and to benefit from new features, enhancements, and security updates, you must migrate from the deprecated Cluster and Console custom resources to the Redpanda custom resource. The migration process involves the following steps:
+
+1. [Deploy at least version 23.2 of the updated Redpanda Operator](#deploy-the-updated-redpanda-operator) in the same Kubernetes cluster as your deprecated Redpanda Operator.
+1. [Prepare your existing Kubernetes resources](#prepare-existing-kubernetes-resources).
+1. [Install the `cluster-to-redpanda-migration` CLI](#install-the-cluster-to-redpanda-migration-cli)
+1. [Migrate your Cluster and Console resources to Redpanda resources](#migrate-cluster-and-console-resources-to-redpanda-resources).
 
 For a description of what's changed, see [Deprecated Cluster and Console Custom Resources](../../../deprecated/cluster-resource).
 
+:::caution
+Before implementing any changes in your production environment, Redpanda Data recommends testing the migration in a non-production environment.
+:::
+
 ## Prerequisites
 
-Before migrating to the Redpanda Operator, you must have the name of your Cluster resource and the namespace in which it's deployed:
-
-If you have multiple clusters, migrate one at a time.
+Before migrating to the Redpanda Operator, you must have the name of your Cluster resource and the namespace in which it's deployed. If you have multiple clusters, migrate one at a time.
 
 ```bash
 kubectl get cluster -A
@@ -35,15 +47,9 @@ If you also have a Console resource, you need the name of your Console resource 
 kubectl get console -A
 ```
 
-:::tip
-Before implementing any changes in your production environment, Redpanda Data recommends testing the migration in a non-production environment.
-:::
+## Deploy the updated Redpanda Operator
 
-## Migrate to the Redpanda Operator and Helm
-
-The primary resource that the updated Redpanda Operator uses to represent a Redpanda cluster is the Redpanda resource.
-
-When you define a Redpanda cluster using this Redpanda resource, the Redpanda Operator takes that configuration and passes it to [Flux](https://fluxcd.io/flux/concepts/). Flux, in turn, interacts with Helm, creating the necessary HelmRepository and HelmRelease resources to deploy and manage the Redpanda Helm chart.
+The first step in the migration process is to deploy the updated Redpanda Operator in the same namespace as an existing Cluster resource.
 
 1. Make sure that you have permission to install custom resource definitions (CRDs):
 
@@ -79,6 +85,10 @@ When you define a Redpanda cluster using this Redpanda resource, the Redpanda Op
   ```text-nocopy
   deployment "redpanda-controller" successfully rolled out
   ```
+
+## Prepare existing Kubernetes resources
+
+After you've deployed the updated Redpanda Operator, you must stop the deprecated Redpanda Operator from reconciling the deprecated resources and adopt some existing Kubernetes resources that are part of the Redpanda deployment.
 
 1. Stop the deprecated Redpanda Operator from reconciling the Cluster and Console custom resources:
 
@@ -150,14 +160,41 @@ When you define a Redpanda cluster using this Redpanda resource, the Redpanda Op
   kubectl --namespace <namespace> delete PodDisruptionBudget <cluster-name>
   ```
 
+## Install the cluster-to-redpanda-migration CLI
+
+The resource that the updated Redpanda Operator uses to represent a Redpanda cluster is the Redpanda resource. The `cluster-to-redpanda-migration` CLI is a single binary that migrates deprecated Cluster and Console resources to Redpanda resources.
+
+1. Install the `cluster-to-redpanda-migration` CLI:
+
+<Tabs>
+<TabItem value="linux" label="Linux" default>
+
+<InstallMigrationCLILinux/>
+
+</TabItem>
+<TabItem value="macos" label="macOS">
+
+<InstallMigrationCLIMac/>
+
+</TabItem>
+</Tabs>
+
+## Migrate Cluster and Console resources to Redpanda resources
+
+You can convert your deprecated Cluster and Console resources to Redpanda resources using a combination of the `cluster-to-redpanda-migration` CLI and manual changes.
+
 1. Migrate your Cluster and Console manifests to a Redpanda resource:
 
   ```bash
-  migration-cli \
+  cluster-to-redpanda-migration \
     --cluster <path-to-cluster-resource.yaml> \
     --console <path-to-console-resource.yaml> \
     --output=redpanda.yaml
   ```
+
+  Replace `path-to-cluster-resource.yaml` with the absolute path to your Cluster manifest.
+
+  Replace `path-to-console-resource.yaml` with the absolute path to your Console manifest.
 
 1. Ensure that your migrated Redpanda resource is configured correctly. You can compare the [Cluster and Console CRD reference](../../../../reference/redpanda-operator/crd) to the [Redpanda CRD reference](../../../../reference/crd).
 
